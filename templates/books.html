@@ -1,0 +1,101 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+<style>
+body {
+    font-family: Arial, sans-serif;
+}
+
+h1 {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.row {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+
+.card {
+    border: 1px solid #ddd;
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+}
+
+.card:hover {
+    transform: translateY(-10px);
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+}
+
+.book-image {
+    width: 100%;
+    height: auto;
+    transition: transform 0.2s ease-in-out;
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.book-image:hover {
+    transform: scale(1.1);
+}
+
+.card-body {
+    padding: 15px;
+}
+
+.card-title {
+    font-size: 1.25rem;
+    margin-bottom: 10px;
+    text-align: center; /* Center the title */
+}
+
+.card-text {
+    font-size: 1rem;
+    color: #555;
+    text-align: center; /* Center the description */
+}
+
+.card-footer {
+    background-color: #f8f9fa;
+    padding: 10px;
+    text-align: center;
+}
+
+.animate {
+    opacity: 0;
+    animation: fadeIn 1s forwards;
+}
+
+@keyframes fadeIn {
+    to {
+        opacity: 1;
+    }
+}
+</style>
+
+<h1>Books:</h1>
+{% if message == 'Not Fount' %}
+    <h2>{{ message }}</h2>
+{% else %}
+    <div class="row row-cols-1 row-cols-md-3 g-4">
+        {% for book in books %}
+              <div class="col">
+                <div class="card h-100">
+                  <img src="{{ book.image.url }}" alt="..." class="book-image" width="250px" height="250px">
+                  <div class="card-body">
+                    <h5 class="card-title">{{ book.title }}</h5>
+                    <p class="card-text">{{ book.description }}</p>
+                  </div>
+                  <div class="card-footer">
+                    <small class="text-body-secondary">Last updated 3 mins ago</small>
+                  </div>
+                </div>
+              </div>
+            {% endfor %}
+    </div>
+{% endif %}
+{% endblock %}

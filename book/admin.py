@@ -11,6 +11,7 @@ class AuthorAdmin(ImportExportModelAdmin):
 
 
 
+<<<<<<< HEAD
 
 @admin.register(Book)
 class BookAdmin(ImportExportModelAdmin):
@@ -19,3 +20,11 @@ class BookAdmin(ImportExportModelAdmin):
     search_fields = ('title', )
     ordering = ('created_at',)
     prepopulated_fields = {"slug": ("title",)}
+=======
+@admin.register(Book)
+class BookAdmin(ImportExportModelAdmin):
+    list_display = ('id', 'title', 'author', 'created_at')
+    list_display_links = ('id', 'title')
+    search_fields = ('title', )
+    ordering = ('created_at',)
+>>>>>>> d65134aaa9116a10d24fb2018f2e905898cb2fa5

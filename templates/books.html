@@ -31,7 +31,7 @@ h1 {
 }
 
 .book-image {
-    width: 100%;
+    width: 50%;
     height: auto;
     transition: transform 0.2s ease-in-out;
     display: block;
@@ -94,6 +94,9 @@ h1 {
                   <div class="card-footer">
                     <small class="text-body-secondary">Last updated 3 mins ago</small>
                   </div>
+                    <div class="card-footer">
+                        <small class="text-body-secondary">Yozuvchi: {{ book.author }}</small>
+                    </div>
                 </div>
               </div>
             {% endfor %}

@@ -2,8 +2,9 @@ from django.db import models
 from django.contrib.auth.models import User
 from .helpers import SaveMedia
 
+
 class Author(models.Model):
-    first_name = models.CharField( max_length=50)
+    first_name = models.CharField(max_length=50)
     last_name = models.CharField(verbose_name="Familyasi", max_length=50)
     birth_date = models.DateField()
     created_at = models.DateTimeField(auto_now_add=True)
@@ -13,6 +14,7 @@ class Author(models.Model):
 
     def __str__(self):
         return self.get_full_name()
+
 
 class Book(models.Model):
     title = models.CharField(max_length=200)
@@ -24,10 +26,12 @@ class Book(models.Model):
     count = models.PositiveIntegerField(default=1)
     created_at = models.DateTimeField(auto_now_add=True)
 
+    def __str__(self):
+        return self.title
+
 
 class Comments(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     text = models.TextField()
     book = models.ManyToManyField(Book)
     created_at = models.DateTimeField(auto_now_add=True)
-

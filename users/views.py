@@ -14,7 +14,7 @@ def login_view(request, ):
             login(request, user)
             return redirect('home')
         else:
-            context = {"message": "Bunday foydalanuvchi mavjud emas"}
+            context = {"message": "Login yoki password xato!"}
             return render(request, 'auth/login.html', context)
 
     return render(request, "auth/login.html")

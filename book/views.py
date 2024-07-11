@@ -1,9 +1,11 @@
 from django.shortcuts import render
 from .models import Book
+from django.contrib.auth.decorators import login_required
 
 def home(request):
     return render(request, 'home.html')
 
+@login_required()
 def books(request):
     if request.method == 'POST':
         search = request.POST['search']
@@ -18,10 +20,10 @@ def books(request):
 
 def book_detail(request, slug):
     book = Book.objects.get(slug=slug)
-    return render(request, 'book_detail.html', {'book':book})
-    # if book:
-    #     return render(request, 'book_detail.html', {'book': book, "message": "Successfully"})
-    # else:
-    #     return render(request, 'book_detail.html', {"message": "Not Found"})
+    if book:
+        return render(request, 'book_detail.html', {'book': book, 'message': "Successfully"})
+    else:
+        return render(request, 'book_detail.html', {'message': "Not Found"})
+
 
 

@@ -87,9 +87,10 @@ h1 {
                 <div class="card h-100">
                   <img src="{{ book.image.url }}" alt="..." class="book-image" width="250px" height="250px">
                   <div class="card-body">
-                      <a href="{% url 'book-detail' book.slug %}"></a>  
+                      <a href="{% url 'book-detail' book.slug %}">
                     <h5 class="card-title">{{ book.title }}</h5>
                     <p class="card-text">{{ book.description }}</p>
+                      </a>
                   </div>
                   <div class="card-footer">
                     <small class="text-body-secondary">Last updated 3 mins ago</small>

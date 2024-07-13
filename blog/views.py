@@ -7,12 +7,13 @@ from django.contrib.auth.models import User
 
 @login_required()
 def savat(request):
-    items = Savat.objects.all()
+    user = request.user
+    items = Savat.objects.filter(user=user)
     if User:
         if items:
             return render(request, 'savat.html', {'items': items, 'message': 'Succesfully'})
         else:
-            return render(request, 'savat.html', {'items': items, 'message': 'Sizda faol buyurtmalar yoq'})
+            return render(request, 'savat.html', {'message': 'Not Fount'})
     else:
         return 'login'
 

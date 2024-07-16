@@ -1,9 +1,12 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from .models import Book
 from django.contrib.auth.decorators import login_required
+from .forms import ArticleForm, BookForm
+
 
 def home(request):
     return render(request, 'home.html')
+
 
 @login_required()
 def books(request):
@@ -26,4 +29,31 @@ def book_detail(request, slug):
         return render(request, 'book_detail.html', {'message': "Not Found"})
 
 
+def create_book(request):
+    if request.method == 'POST':
+        form = ArticleForm(request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect('books')
+        else:
+            return render(request, 'create_book.html', {'form': form, "message": "Xatolik topildi"})
+    form = ArticleForm()
+    return render(request, 'create_book.html', {'form': form})
 
+
+def delete_book(request, id):
+    book = Book.objects.get(id=id)
+    book.delete()
+    return redirect('books')
+
+
+def create_booklist(request):
+    if request.method == 'POST':
+        formm = BookForm(request.POST, request.FILES)
+        if formm.is_valid():
+            formm.save()
+            return redirect('books')
+        else:
+            return render(request, 'create_book_to_list.html', {'formm': formm, "message": "Xatolik topildi"})
+    formm = BookForm()
+    return render(request, 'create_book_to_list.html', {'formm': formm})

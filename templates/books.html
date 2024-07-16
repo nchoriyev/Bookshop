@@ -50,13 +50,13 @@ h1 {
 .card-title {
     font-size: 1.25rem;
     margin-bottom: 10px;
-    text-align: center; /* Center the title */
+    text-align: center;
 }
 
 .card-text {
     font-size: 1rem;
     color: #555;
-    text-align: center; /* Center the description */
+    text-align: center;
 }
 
 .card-footer {
@@ -75,32 +75,62 @@ h1 {
         opacity: 1;
     }
 }
+
+.button-container {
+    display: flex;
+    justify-content: center;
+    margin-top: 20px;
+}
+
+.button-container button {
+    background-color: #007bff;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    margin: 10px;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s, transform 0.3s;
+}
+
+.button-container button:hover {
+    background-color: #0056b3;
+    transform: scale(1.1);
+}
 </style>
 
 <h1>Books:</h1>
-{% if message == 'Not Fount' %}
+{% if message == 'Not Found' %}
     <h2>{{ message }}</h2>
 {% else %}
     <div class="row row-cols-1 row-cols-md-3 g-4">
         {% for book in books %}
-              <div class="col">
+            <div class="col">
                 <div class="card h-100">
-                  <img src="{{ book.image.url }}" alt="..." class="book-image" width="250px" height="250px">
-                  <div class="card-body">
-                      <a href="{% url 'book-detail' book.slug %}">
-                    <h5 class="card-title">{{ book.title }}</h5>
-                    <p class="card-text">{{ book.description }}</p>
-                      </a>
-                  </div>
-                  <div class="card-footer">
-                    <small class="text-body-secondary">Narxi: {{ book.price }}$</small>
-                  </div>
+                    <img src="{{ book.image.url }}" alt="..." class="book-image" width="250px" height="250px">
+                    <div class="card-body">
+                        <a href="{% url 'book-detail' book.slug %}">
+                            <h5 class="card-title">{{ book.title }}</h5>
+                            <p class="card-text">{{ book.description }}</p>
+                        </a>
+                    </div>
                     <div class="card-footer">
-                        <small class="text-body-secondary">Yozuvchi: {{ book.author }}</small>
+                        <small class="text-body-secondary">Price: {{ book.price }}$</small>
+                    </div>
+                    <div class="card-footer">
+                        <small class="text-body-secondary">Author: {{ book.author }}</small>
                     </div>
                 </div>
-              </div>
-            {% endfor %}
+            </div>
+        {% endfor %}
+    </div>
+    <div class="button-container">
+        <a href="{% url 'book-create' %}">
+            <button type="submit">Order create to Savat</button>
+        </a>
+        <a href="{% url 'book-create-list' %}">
+            <button type="submit">Add book to Booklist</button>
+        </a>
     </div>
 {% endif %}
 {% endblock %}

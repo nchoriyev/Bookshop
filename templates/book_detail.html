@@ -58,7 +58,7 @@
             <div class="card-body">
                 <h5 class="card-title">Description: </h5>
                 <p class="card-text">{{ book.description }}</p>
-                <a href="#" class="btn btn-primary">Go somewhere</a>
+                <a href="{% url 'book-delete' book.id %}" class="btn btn-primary">Delete</a>
             </div>
         </div>
     </div>

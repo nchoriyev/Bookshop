@@ -59,6 +59,7 @@
                 <h5 class="card-title">Description: </h5>
                 <p class="card-text">{{ book.description }}</p>
                 <a href="{% url 'book-delete' book.id %}" class="btn btn-primary">Delete</a>
+                <a href="{% url 'book-update' book.id %}" class="btn btn-primary">Update</a>
             </div>
         </div>
     </div>

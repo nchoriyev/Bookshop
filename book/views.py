@@ -1,7 +1,7 @@
 from django.shortcuts import render, redirect
 from .models import Book
 from django.contrib.auth.decorators import login_required
-from .forms import ArticleForm, BookForm
+from .forms import ArticleForm, BookForm, UpdateForm
 
 
 def home(request):
@@ -57,3 +57,15 @@ def create_booklist(request):
             return render(request, 'create_book_to_list.html', {'formm': formm, "message": "Xatolik topildi"})
     formm = BookForm()
     return render(request, 'create_book_to_list.html', {'formm': formm})
+
+def update_book(request, id):
+    book = Book.objects.get(id=id)
+    if request.method == 'POST':
+        form = UpdateForm(request.POST, request.FILES, instance=book)
+        if form.is_valid():
+            form.save()
+            return redirect('books')
+        else:
+            return render(request, 'update_detail.html', {'form': form, "message": "Xatolik topildi"})
+    form = BookForm()
+    return render(request, 'update_detail.html', {'form': form})

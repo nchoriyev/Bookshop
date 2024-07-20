@@ -34,6 +34,7 @@ INSTALLED_APPS = [
     'import_export',
     'users',
     'blog',
+    'authors',
 ]
 
 MIDDLEWARE = [

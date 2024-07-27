@@ -5,7 +5,6 @@ from .forms import ArticleForm, BookForm, UpdateForm
 from django.views.generic import TemplateView, ListView, DetailView
 from django.utils.decorators import method_decorator
 from django.views.generic.edit import CreateView, DeleteView, UpdateView
-from django.urls import reverse_lazy
 
 class HomeView(TemplateView):
     template_name = 'home.html'

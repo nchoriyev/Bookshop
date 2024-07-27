@@ -2,70 +2,77 @@ from django.shortcuts import render, redirect
 from .models import Book
 from django.contrib.auth.decorators import login_required
 from .forms import ArticleForm, BookForm, UpdateForm
+from django.views.generic import TemplateView, ListView, DetailView
+from django.utils.decorators import method_decorator
+from django.views.generic.edit import CreateView, DeleteView, UpdateView
+from django.urls import reverse_lazy
 
+class HomeView(TemplateView):
+    template_name = 'home.html'
 
-def home(request):
-    return render(request, 'home.html')
+@method_decorator(login_required, name='dispatch')
+class BooksView(ListView):
+    model = Book
+    template_name = 'books.html'
+    context_object_name = 'books'
 
-
-@login_required()
-def books(request):
-    if request.method == 'POST':
-        search = request.POST['search']
-        books = Book.objects.filter(title__icontains=search) | Book.objects.filter(author__first_name__icontains=search)
-        if books:
-            return render(request, 'books.html', {'books': books, "value": search, "message": "Successfully"})
+    def post(self, request):
+        search = request.POST.get('search', '')
+        self.object_list = self.get_queryset().filter(
+            title__icontains=search
+        ) | self.get_queryset().filter(
+            author__first_name__icontains=search
+        )
+        context = self.get_context_data()
+        context['value'] = search
+        if not self.object_list.exists():
+            context['message'] = "Not Found"
         else:
-            return render(request, 'books.html', {'message': "Not Fount"})
-    books = Book.objects.all()
-    return render(request, 'books.html', {'books': books})
+            context['message'] = "Successfully"
+        return self.render_to_response(context)
 
+class BookDetailView(DetailView):
+    model = Book
+    template_name = 'book_detail.html'
+    context_object_name = 'book'
+    slug_field = 'slug'
+    slug_url_kwarg = 'slug'
 
-def book_detail(request, slug):
-    book = Book.objects.get(slug=slug)
-    if book:
-        return render(request, 'book_detail.html', {'book': book, 'message': "Successfully"})
-    else:
-        return render(request, 'book_detail.html', {'message': "Not Found"})
+class CreateBookView(CreateView):
+    form_class = ArticleForm
+    template_name = 'create_book.html'
+    success_url = '/books/'
 
+    def form_invalid(self, form):
+        return self.render_to_response(self.get_context_data(form=form, message="Xatolik topildi"))
 
-def create_book(request):
-    if request.method == 'POST':
-        form = ArticleForm(request.POST)
-        if form.is_valid():
-            form.save()
-            return redirect('books')
-        else:
-            return render(request, 'create_book.html', {'form': form, "message": "Xatolik topildi"})
-    form = ArticleForm()
-    return render(request, 'create_book.html', {'form': form})
+class DeleteBookView(DeleteView):
+    model = Book
+    template_name = 'book_confirm_delete.html'
+    success_url = '/books/'
+    pk_url_kwarg = 'id'
 
+    def get(self, request, id):
+        return self.post(request, id)
 
-def delete_book(request, id):
-    book = Book.objects.get(id=id)
-    book.delete()
-    return redirect('books')
+    def post(self, request, id):
+        book = Book.objects.get(id=id)
+        book.delete()
+        return redirect(self.success_url)
 
+class CreateBooklistView(CreateView):
+    form_class = BookForm
+    template_name = 'create_book_to_list.html'
+    success_url = '/books/'
 
-def create_booklist(request):
-    if request.method == 'POST':
-        formm = BookForm(request.POST, request.FILES)
-        if formm.is_valid():
-            formm.save()
-            return redirect('books')
-        else:
-            return render(request, 'create_book_to_list.html', {'formm': formm, "message": "Xatolik topildi"})
-    formm = BookForm()
-    return render(request, 'create_book_to_list.html', {'formm': formm})
+    def form_invalid(self, form):
+        return self.render_to_response(self.get_context_data(form=form, message="Xatolik topildi"))
 
-def update_book(request, id):
-    book = Book.objects.get(id=id)
-    if request.method == 'POST':
-        form = UpdateForm(request.POST, request.FILES, instance=book)
-        if form.is_valid():
-            form.save()
-            return redirect('books')
-        else:
-            return render(request, 'update_detail.html', {'form': form, "message": "Xatolik topildi"})
-    form = BookForm()
-    return render(request, 'update_detail.html', {'form': form})
+class UpdateBookView(UpdateView):
+    model = Book
+    form_class = UpdateForm
+    template_name = 'update_detail.html'
+    success_url = '/books/'
+
+    def form_invalid(self, form):
+        return self.render_to_response(self.get_context_data(form=form, message="Xatolik topildi"))

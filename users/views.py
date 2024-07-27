@@ -2,53 +2,51 @@ from django.contrib.auth import login, logout
 from django.contrib.auth.forms import AuthenticationForm
 from django.contrib.auth.models import User
 from django.shortcuts import render, redirect
+from django.urls import path
+from django.views import View
+from django.views.generic import FormView, CreateView, RedirectView, TemplateView
 
+class LoginView(FormView):
+    template_name = 'auth/login.html'
+    form_class = AuthenticationForm
 
-def login_view(request, ):
-    if request.method == 'POST':
-        # username = request.POST['username']
-        # password = request.POST['password']
-        login_form = AuthenticationForm(request, data=request.POST)
-        if login_form.is_valid():
-            user = login_form.get_user()
-            login(request, user)
-            return redirect('home')
-        else:
-            context = {"message": "Login yoki password xato!"}
-            return render(request, 'auth/login.html', context)
+    def form_valid(self, form):
+        user = form.get_user()
+        login(self.request, user)
+        return redirect('home')
 
-    return render(request, "auth/login.html")
+    def form_invalid(self, form):
+        context = {"message": "Login yoki password xato!"}
+        return self.render_to_response(context)
 
+class RegisterView(CreateView):
+    model = User
+    template_name = 'auth/register.html'
+    fields = ['first_name', 'last_name', 'username', 'email', 'password']
 
-def register_view(request):
-    if request.method == "POST":
-        first_name = request.POST['first_name']
-        last_name = request.POST['last_name']
-        username = request.POST['username']
-        email = request.POST['email']
-        password = request.POST['password']
-        password2 = request.POST['password1']
-        user = User(first_name=first_name, last_name=last_name, username=username, email=email, password=password)
-        user.set_password(password)
+    def form_valid(self, form):
+        user = form.save(commit=False)
+        user.set_password(form.cleaned_data['password'])
         user.save()
         return redirect('login')
-    return render(request, "auth/register.html")
 
+class LogoutView(View):
 
-def logout_view(request):
-    logout(request)
-    return redirect('home')
+    def get(self, request, *args, **kwargs):
+        logout(request)
+        return redirect('home')
 
+class ShowUserView(TemplateView):
+    template_name = 'show_user.html'
 
-def show_user(request):
-    if request.user.is_authenticated:
-        user = request.user
-        context = {
-            'first_name': user.first_name,
-            'last_name': user.last_name,
-            'username': user.username,
-            'email': user.email
-        }
-        return render(request, 'show_user.html', context)
-    else:
-        return redirect('login')
+    def get(self, request, *args, **kwargs):
+        if request.user.is_authenticated:
+            context = {
+                'first_name': request.user.first_name,
+                'last_name': request.user.last_name,
+                'username': request.user.username,
+                'email': request.user.email
+            }
+            return self.render_to_response(context)
+        else:
+            return redirect('login')
